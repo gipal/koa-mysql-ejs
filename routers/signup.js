@@ -22,7 +22,7 @@ router.post('/signup', async(ctx, next) => {
         avator: ctx.request.body.avator
     }
     await userModel.findDataByName(user.name)
-        .then(async (result) => {
+        .then(async (result) => {      //   这里在then后面加上async应该是因为内部还有await，不加这个async会报错
             console.log(result)
             if (result.length) {
                 try {
@@ -34,7 +34,7 @@ router.post('/signup', async(ctx, next) => {
                 // 用户存在
                 ctx.body = {
                     data: 1
-                };;
+                };
                 
             } else if (user.pass !== user.repeatpass || user.pass === '') {
                 ctx.body = {
@@ -44,7 +44,7 @@ router.post('/signup', async(ctx, next) => {
                 // ctx.session.user=ctx.request.body.name   
                 let base64Data = user.avator.replace(/^data:image\/\w+;base64,/, "");
                 let dataBuffer = new Buffer(base64Data, 'base64'); // 接收图片保存为文件
-                let getName = Number(Math.random().toString().substr(3)).toString(36) + Date.now()
+                let getName = Number(Math.random().toString().substr(3)).toString(36) + Date.now() // toString(36)进制
                 await fs.writeFile('./public/images/' + getName + '.png', dataBuffer, err => { 
                     if (err) throw err;
                     console.log('头像上传成功') 
